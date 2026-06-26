@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Computational Engineering — Roadmap</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-info: #eff6ff;
+    --bg-success: #f0fdf4;
+    --bg-warning: #fffbeb;
+    --text: #111827;
+    --text-secondary: #6b7280;
+    --text-info: #1d4ed8;
+    --text-success: #15803d;
+    --text-warning: #b45309;
+    --border: rgba(0,0,0,0.1);
+    --border-hover: rgba(0,0,0,0.2);
+    --border-info: rgba(29,78,216,0.3);
+    --border-success: rgba(21,128,61,0.3);
+    --border-warning: rgba(180,83,9,0.3);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111827;
+      --bg-secondary: #1f2937;
+      --bg-info: #1e3a5f;
+      --bg-success: #14532d;
+      --bg-warning: #451a03;
+      --text: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-info: #93c5fd;
+      --text-success: #86efac;
+      --text-warning: #fcd34d;
+      --border: rgba(255,255,255,0.1);
+      --border-hover: rgba(255,255,255,0.2);
+      --border-info: rgba(147,197,253,0.3);
+      --border-success: rgba(134,239,172,0.3);
+      --border-warning: rgba(252,211,77,0.3);
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  #root {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  button { font-family: inherit; cursor: pointer; }
+
+  .phase-card { transition: border-color 0.15s; }
+  .phase-card:hover { border-color: var(--border-hover) !important; }
+  .item-row:hover { background: var(--bg-secondary) !important; }
+  .btn:hover { background: var(--bg-secondary); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script>
+const { useState, useEffect, useCallback } = React;
+
+const TS = {
+  learn: { color:"var(--text-info)", border:"var(--border-info)", bg:"var(--bg-info)" },
+  tools: { color:"var(--text-warning)", border:"var(--border-warning)", bg:"var(--bg-warning)" },
+  build: { color:"var(--text-success)", border:"var(--border-success)", bg:"var(--bg-success)" },
+};
+
+const PHASES = [
+  { id:1, name:"Learn to program", goal:"Turn ideas into code.",
+    exit:"You can build simple programs without following tutorials.",
+    sections:[
+      { title:"Python fundamentals", type:"learn", items:["Variables","Data types","Inputs / outputs","Conditionals","Loops","Functions","Lists","Dictionaries","Sets","File handling","Modules and libraries","Error handling"] },
+      { title:"Tools", type:"tools", items:["VS Code","Git","GitHub","Command line basics"] },
+      { title:"Projects", type:"build", items:["Calculator","Expense tracker","Habit tracker","Gym tracker","Calorie tracker"] }
+    ]
+  },
+  { id:2, name:"Learn computer science", goal:"Understand how software works.",
+    exit:"You can solve programming problems independently.",
+    sections:[
+      { title:"Data structures", type:"learn", items:["Arrays","Linked lists","Stacks","Queues","Hash tables","Trees","Graphs"] },
+      { title:"Algorithms", type:"learn", items:["Searching","Sorting","Recursion","Dynamic programming basics"] },
+      { title:"Complexity", type:"learn", items:["Big O notation","Time complexity","Space complexity"] },
+      { title:"Projects", type:"build", items:["Search engine for notes","Recommendation system","Path-finding visualizer"] }
+    ]
+  },
+  { id:3, name:"Learn how computers work", goal:"Understand the machine.",
+    exit:"You understand what happens when you type a URL into a browser.",
+    sections:[
+      { title:"Operating systems", type:"learn", items:["Processes","Threads","Memory","Storage","Scheduling"] },
+      { title:"Networking", type:"learn", items:["HTTP","DNS","TCP/IP","APIs","Client / server architecture"] },
+      { title:"Databases", type:"learn", items:["SQL","Joins","Indexes","Database design"] },
+      { title:"Projects", type:"build", items:["API-connected app","Database-backed application"] }
+    ]
+  },
+  { id:4, name:"Mathematics for technology", goal:"Think quantitatively.",
+    exit:"You can understand the mathematics behind AI papers and technical concepts.",
+    sections:[
+      { title:"Algebra", type:"learn", items:["Equations","Functions","Graphs"] },
+      { title:"Statistics", type:"learn", items:["Mean","Variance","Correlation","Distributions"] },
+      { title:"Probability", type:"learn", items:["Conditional probability","Bayes intuition"] },
+      { title:"Linear algebra", type:"learn", items:["Vectors","Matrices","Transformations"] },
+      { title:"Calculus", type:"learn", items:["Derivatives","Integrals","Optimization intuition"] },
+      { title:"Projects", type:"build", items:["Data analysis project","Simulation","Prediction model"] }
+    ]
+  },
+  { id:5, name:"Data & analytics", goal:"Extract knowledge from information.",
+    exit:"You can take raw data and derive useful insights.",
+    sections:[
+      { title:"Python data stack", type:"learn", items:["NumPy","Pandas","Matplotlib"] },
+      { title:"SQL", type:"learn", items:["Advanced queries","Aggregations","Joins"] },
+      { title:"Projects", type:"build", items:["Housing analysis","Economic analysis","Engineering data dashboard"] }
+    ]
+  },
+  { id:6, name:"Artificial intelligence", goal:"Understand intelligent systems.",
+    exit:"You can build useful AI systems yourself.",
+    sections:[
+      { title:"Machine learning", type:"learn", items:["Regression","Classification","Clustering","Evaluation"] },
+      { title:"Deep learning", type:"learn", items:["Neural networks","Backpropagation","Transformers"] },
+      { title:"LLMs", type:"learn", items:["Embeddings","RAG","Fine-tuning concepts","Agents"] },
+      { title:"Projects", type:"build", items:["AI assistant","AI research tool","AI automation workflow"] }
+    ]
+  },
+  { id:7, name:"Software engineering", goal:"Build real products.",
+    exit:"You can take an idea from nothing to a deployed product.",
+    sections:[
+      { title:"Web development", type:"learn", items:["HTML","CSS","JavaScript"] },
+      { title:"Backend", type:"learn", items:["Flask or FastAPI","Authentication","APIs"] },
+      { title:"Deployment", type:"learn", items:["Cloud basics","Docker","CI/CD"] },
+      { title:"Projects", type:"build", items:["SaaS product","AI-powered web app","Portfolio project"] }
+    ]
+  },
+  { id:8, name:"Systems thinking", goal:"Understand the world.",
+    exit:"This phase never ends.", endless:true,
+    sections:[
+      { title:"Study", type:"learn", items:["Economics","Incentives","History","Business","Networks","Complex systems"] }
+    ]
+  },
+  { id:9, name:"Leadership & communication", goal:"Increase leverage.",
+    exit:"Build teams, communities, and businesses.",
+    sections:[
+      { title:"Learn", type:"learn", items:["Writing","Speaking","Negotiation","Sales","Management"] },
+      { title:"Build", type:"build", items:["Teams","Communities","Businesses"] }
+    ]
+  },
+  { id:10, name:"Frontier exploration", goal:"Find important problems.",
+    exit:"By now, you're no longer consuming knowledge. You're contributing.", endless:true,
+    sections:[
+      { title:"Explore", type:"learn", items:["AI","Robotics","Energy","Biotechnology","Space","Infrastructure"] }
+    ]
+  }
+];
+
+const SKEY = "ce-progress-v1";
+
+function getProgress(phase, completed) {
+  let t = 0, d = 0;
+  phase.sections.forEach((s, si) => s.items.forEach((_, ii) => {
+    t++;
+    if (completed.has(`${phase.id}-${si}-${ii}`)) d++;
+  }));
+  return { total:t, done:d, pct: t ? Math.round((d/t)*100) : 0 };
+}
+
+function App() {
+  const [completed, setCompleted] = useState(new Set());
+  const [view, setView] = useState(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(SKEY);
+      if (saved) setCompleted(new Set(JSON.parse(saved)));
+    } catch {}
+  }, []);
+
+  const persist = (n) => {
+    try { localStorage.setItem(SKEY, JSON.stringify([...n])); } catch {}
+  };
+
+  const toggle = useCallback((k) => {
+    setCompleted(prev => {
+      const n = new Set(prev);
+      n.has(k) ? n.delete(k) : n.add(k);
+      persist(n);
+      return n;
+    });
+  }, []);
+
+  const toggleAll = useCallback((phaseId, si, count) => {
+    setCompleted(prev => {
+      const n = new Set(prev);
+      const keys = Array.from({ length: count }, (_, ii) => `${phaseId}-${si}-${ii}`);
+      const all = keys.every(k => n.has(k));
+      keys.forEach(k => all ? n.delete(k) : n.add(k));
+      persist(n);
+      return n;
+    });
+  }, []);
+
+  const overall = (() => {
+    let t = 0, d = 0;
+    PHASES.forEach(p => { const g = getProgress(p, completed); t += g.total; d += g.done; });
+    return t ? Math.round((d/t)*100) : 0;
+  })();
+
+  const phase = view ? PHASES.find(p => p.id === view) : null;
+
+  return phase
+    ? React.createElement(Detail, { phase, completed, toggle, toggleAll, prog: getProgress(phase, completed), back: () => setView(null) })
+    : React.createElement(Overview, { phases: PHASES, completed, overall, onSelect: setView });
+}
+
+function Overview({ phases, completed, overall, onSelect }) {
+  return React.createElement("div", null,
+    React.createElement("p", { style:{ fontSize:11, margin:"0 0 3px", color:"var(--text-secondary)", fontFamily:"var(--font-mono)", letterSpacing:"0.1em", textTransform:"uppercase" }}, "Roadmap"),
+    React.createElement("h1", { style:{ fontSize:24, fontWeight:500, margin:"0 0 4px" }}, "Computational engineering"),
+    React.createElement("p", { style:{ fontSize:13, color:"var(--text-secondary)", margin:"0 0 1.5rem" }}, "Capability building toward the technological frontier."),
+
+    React.createElement("div", { style:{ display:"flex", alignItems:"center", gap:12, marginBottom:"2rem" }},
+      React.createElement("div", { style:{ flex:1, height:5, background:"var(--border)", borderRadius:3, overflow:"hidden" }},
+        React.createElement("div", { style:{ height:"100%", width:`${overall}%`, background:"var(--text-info)", transition:"width 0.4s", borderRadius:3 }})
+      ),
+      React.createElement("span", { style:{ fontSize:12, fontFamily:"var(--font-mono)", color:"var(--text-secondary)", minWidth:32 }}, `${overall}%`)
+    ),
+
+    React.createElement("div", { style:{ position:"relative" }},
+      React.createElement("div", { style:{ position:"absolute", left:11, top:13, bottom:13, width:"0.5px", background:"var(--border)" }}),
+      phases.map((p, i) => {
+        const { pct, done:d, total } = getProgress(p, completed);
+        const full = pct === 100, some = d > 0;
+        return React.createElement("div", { key:p.id, onClick:() => onSelect(p.id), style:{ display:"flex", gap:16, marginBottom:10, cursor:"pointer" }},
+          React.createElement("div", { style:{
+            width:22, height:22, borderRadius:"50%", flexShrink:0, zIndex:1, position:"relative",
+            background: full ? "var(--bg-success)" : some ? "var(--bg-info)" : "var(--bg)",
+            border: `0.5px solid ${full ? "var(--border-success)" : some ? "var(--border-info)" : "var(--border-hover)"}`,
+            display:"flex", alignItems:"center", justifyContent:"center",
+            fontSize:9, fontWeight:500, fontFamily:"var(--font-mono)",
+            color: full ? "var(--text-success)" : some ? "var(--text-info)" : "var(--text-secondary)"
+          }},
+            full
+              ? React.createElement("i", { className:"ti ti-check", style:{ fontSize:11 } })
+              : i + 1
+          ),
+          React.createElement("div", { className:"phase-card", style:{
+            flex:1, padding:"11px 14px",
+            background:"var(--bg)",
+            border:"0.5px solid var(--border)",
+            borderRadius:"var(--radius-lg)"
+          }},
+            React.createElement("div", { style:{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:3 }},
+              React.createElement("span", { style:{ fontSize:14, fontWeight:500 }}, p.name),
+              React.createElement("div", { style:{ display:"flex", alignItems:"center", gap:6 }},
+                React.createElement("span", { style:{ fontSize:11, color:"var(--text-secondary)", fontFamily:"var(--font-mono)" }}, `${d}/${total}`),
+                React.createElement("i", { className:"ti ti-chevron-right", style:{ fontSize:13, color:"var(--text-secondary)" }})
+              )
+            ),
+            React.createElement("p", { style:{ fontSize:12, color:"var(--text-secondary)", margin:"0 0 8px", fontStyle:"italic" }}, p.goal),
+            React.createElement("div", { style:{ height:3, background:"var(--border)", borderRadius:2, overflow:"hidden" }},
+              React.createElement("div", { style:{ height:"100%", width:`${pct}%`, background: full ? "var(--text-success)" : "var(--text-info)", transition:"width 0.3s" }})
+            )
+          )
+        );
+      })
+    )
+  );
+}
+
+function Detail({ phase, completed, toggle, toggleAll, prog, back }) {
+  const { pct, done:d, total } = prog;
+  return React.createElement("div", null,
+    React.createElement("button", { onClick:back, className:"btn", style:{
+      display:"inline-flex", alignItems:"center", gap:6, marginBottom:"1.5rem",
+      background:"none", border:"0.5px solid var(--border)",
+      borderRadius:"var(--radius-md)", padding:"6px 12px",
+      fontSize:13, color:"var(--text-secondary)"
+    }},
+      React.createElement("i", { className:"ti ti-arrow-left", style:{ fontSize:13 }}), " All phases"
+    ),
+
+    React.createElement("p", { style:{ fontSize:11, margin:"0 0 3px", color:"var(--text-secondary)", fontFamily:"var(--font-mono)", letterSpacing:"0.1em", textTransform:"uppercase" }}, `Phase ${phase.id}`),
+    React.createElement("h2", { style:{ fontSize:22, fontWeight:500, margin:"0 0 3px" }}, phase.name),
+    React.createElement("p", { style:{ fontSize:13, color:"var(--text-secondary)", fontStyle:"italic", margin:"0 0 1rem" }}, phase.goal),
+
+    React.createElement("div", { style:{ display:"flex", alignItems:"center", gap:12, marginBottom:"1rem" }},
+      React.createElement("div", { style:{ flex:1, height:5, background:"var(--border)", borderRadius:3, overflow:"hidden" }},
+        React.createElement("div", { style:{ height:"100%", width:`${pct}%`, background: pct===100 ? "var(--text-success)" : "var(--text-info)", transition:"width 0.3s" }})
+      ),
+      React.createElement("span", { style:{ fontSize:12, fontFamily:"var(--font-mono)", color:"var(--text-secondary)" }}, `${d}/${total}`)
+    ),
+
+    React.createElement("div", { style:{ background:"var(--bg-info)", border:"0.5px solid var(--border-info)", borderRadius:"var(--radius-md)", padding:"10px 14px", marginBottom:"1.5rem" }},
+      React.createElement("p", { style:{ fontSize:10, margin:"0 0 3px", fontFamily:"var(--font-mono)", color:"var(--text-info)", textTransform:"uppercase", letterSpacing:"0.08em" }}, "Exit condition"),
+      React.createElement("p", { style:{ fontSize:13, margin:0, color:"var(--text-info)" }}, phase.exit),
+      phase.endless && React.createElement("p", { style:{ fontSize:11, margin:"4px 0 0", color:"var(--text-info)", opacity:0.7 }}, "Runs in parallel with everything else. No finish line.")
+    ),
+
+    phase.sections.map((s, si) => {
+      const ts = TS[s.type] || TS.learn;
+      const keys = s.items.map((_, ii) => `${phase.id}-${si}-${ii}`);
+      const allDone = keys.every(k => completed.has(k));
+      return React.createElement("div", { key:si, style:{ marginBottom:"1.25rem" }},
+        React.createElement("div", { style:{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:6 }},
+          React.createElement("div", { style:{ display:"flex", alignItems:"center", gap:8 }},
+            React.createElement("div", { style:{ width:3, height:12, background:ts.color, borderRadius:0 }}),
+            React.createElement("span", { style:{ fontSize:11, fontWeight:500, color:ts.color, textTransform:"uppercase", letterSpacing:"0.08em", fontFamily:"var(--font-mono)" }}, s.title)
+          ),
+          React.createElement("button", { onClick:() => toggleAll(phase.id, si, s.items.length), className:"btn", style:{
+            fontSize:11, background:"none", border:"0.5px solid var(--border)",
+            borderRadius:"var(--radius-md)", padding:"3px 8px", color:"var(--text-secondary)"
+          }}, allDone ? "Unmark all" : "Mark all")
+        ),
+        React.createElement("div", { style:{ display:"flex", flexDirection:"column", gap:3 }},
+          s.items.map((item, ii) => {
+            const k = `${phase.id}-${si}-${ii}`;
+            const ok = completed.has(k);
+            return React.createElement("div", { key:ii, onClick:() => toggle(k), className:"item-row", style:{
+              display:"flex", alignItems:"center", gap:10, padding:"9px 12px",
+              borderRadius:"var(--radius-md)", cursor:"pointer",
+              background: ok ? "var(--bg-success)" : "var(--bg)",
+              border: `0.5px solid ${ok ? "var(--border-success)" : "var(--border)"}`,
+              transition:"background 0.15s, border-color 0.15s"
+            }},
+              React.createElement("div", { style:{
+                width:16, height:16, borderRadius:4, flexShrink:0,
+                border: `0.5px solid ${ok ? "var(--text-success)" : "var(--border-hover)"}`,
+                background: ok ? "var(--text-success)" : "transparent",
+                display:"flex", alignItems:"center", justifyContent:"center", transition:"background 0.15s"
+              }},
+                ok && React.createElement("i", { className:"ti ti-check", style:{ fontSize:10, color:"white" }})
+              ),
+              React.createElement("span", { style:{
+                fontSize:14,
+                color: ok ? "var(--text-success)" : "var(--text)",
+                textDecoration: ok ? "line-through" : "none"
+              }}, item)
+            );
+          })
+        )
+      );
+    })
+  );
+}
+
+ReactDOM.render(React.createElement(App), document.getElementById("root"));
+</script>
+</body>
+</html>
